@@ -35,7 +35,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 		fileMeta := meta.FileMeta{
 			FileName: head.Filename,
-			Location: "D:/FileStore/data/" + head.Filename,
+			Location: "/home/whx/Desktop/FileStore/data/" + head.Filename,
 			UploadAt: time.Now().Format("2006/01/02 15:04:05"),
 		}
 
