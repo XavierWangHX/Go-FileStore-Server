@@ -30,6 +30,7 @@ func GetFileMeta(filehash string) (*TableFile, error) {
 
 }
 
+// insert FileMeta
 func OnUploadFinished(filehash string, filename string, filesize int64, fileaddr string) bool {
 	stmt, err := myDB.DBConn().Prepare(
 		"insert ignore into tbl_file(`file_sha1`,`file_name`,`file_size`," +

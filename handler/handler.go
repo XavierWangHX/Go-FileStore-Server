@@ -86,7 +86,11 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fsha1 := r.Form["filehash"][0]
-	fm := meta.GetFileMeta(fsha1)
+	fm, err := meta.GetFileMetaDB(fsha1)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	f, err := os.Open(fm.Location)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -116,9 +120,13 @@ func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	curFileMeta := meta.GetFileMeta(fileSha1)
+	curFileMeta, err := meta.GetFileMetaDB(fileSha1)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	curFileMeta.FileName = newFileName
-	meta.UpdateFileMeta(curFileMeta)
+	meta.UpdateFileMetaDB(curFileMeta)
 	data, err := json.Marshal(curFileMeta)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
