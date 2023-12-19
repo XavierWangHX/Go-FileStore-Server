@@ -3,6 +3,7 @@ package db
 import (
 	mydb "FileStore/db/mysql"
 	"fmt"
+	"log"
 )
 
 func UserSignUp(username string, passwd string) bool {
@@ -13,5 +14,13 @@ func UserSignUp(username string, passwd string) bool {
 	}
 	defer stmt.Close()
 	ret, err := stmt.Exec(username, passwd)
+	if err != nil {
+		log.Println("Failed to insert, err:" + err.Error())
+		return false
+	}
+	if rowsAffected, err := ret.RowsAffected(); nil == err && rowsAffected > 0 {
 
+		return true
+	}
+	return false
 }

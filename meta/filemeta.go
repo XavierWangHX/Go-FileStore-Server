@@ -19,7 +19,7 @@ func UpdateFileMeta(fmeta FileMeta) {
 	fileMetas[fmeta.FileSha1] = fmeta
 }
 func UpdateFileMetaDB(fmeta FileMeta) bool {
-	return mydb.OnUploadFinished(fmeta.FileSha1, fmeta.FileName, fmeta.FileSize, fmeta.Location)
+	return mydb.UploadFileMeta(fmeta.FileSha1, fmeta.FileName, fmeta.FileSize, fmeta.Location)
 }
 func GetFileMeta(fileSha1 string) FileMeta {
 	return fileMetas[fileSha1]
