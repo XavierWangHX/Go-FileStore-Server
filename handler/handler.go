@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"FileStore/db"
 	"FileStore/meta"
 	"FileStore/util"
 	"encoding/json"
@@ -15,7 +16,8 @@ import (
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// 返回上传html页面
-		data, err := ioutil.ReadFile("./static/view/upload1.html")
+
+		data, err := ioutil.ReadFile("./static/view/upload.html")
 		if err != nil {
 			io.WriteString(w, "internel server error")
 			return
@@ -27,6 +29,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// http.Redirect(w, r, "/static/view/index.html",  http.StatusFound)
 	} else if r.Method == "POST" {
 		// 接收文件流及存储到本地目录
+
 		file, head, err := r.FormFile("file")
 		if err != nil {
 			fmt.Printf("Failed to get data, err: %s", err.Error())
@@ -55,7 +58,20 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		newFile.Seek(0, 0)
 		fileMeta.FileSha1 = util.FileSha1(newFile)
 		meta.UpdateFileMetaDB(fileMeta)
-		http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
+
+		r.ParseForm()
+		username := r.Form.Get("username")
+		suc := db.InsertToUserfileTable(username, fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
+		if suc {
+			resp := util.RespMsg{
+				Code: 0,
+				Msg:  "OK",
+				Data: "/static/view/home.html",
+			}
+			w.Write(resp.JSONBytes())
+		} else {
+			w.Write([]byte("Upload Failed"))
+		}
 
 	}
 }

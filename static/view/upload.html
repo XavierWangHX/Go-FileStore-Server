@@ -57,14 +57,14 @@
 
   function onUpload() {
     var upUrl = "/file/upload?" + queryParams();
-    var upEntry = localStorage.getItem("uploadEntry");
+    /*var upEntry = localStorage.getItem("uploadEntry");
     if (upEntry != "" ) {
       if (upEntry.indexOf("http:")>=0) {
         upUrl = upEntry + "/file/upload?" + queryParams();
       } else {
         upUrl = "http://" + upEntry + "/file/upload?" + queryParams();
       }
-    }
+    }*/
     $.ajax({
       url: upUrl,
       type: 'POST',
@@ -76,10 +76,9 @@
         alert('请求报错信息: ' + JSON.stringify(err));
       },
       success: function (res) {
-        alert('请求返回结果: ' + JSON.stringify(res));
-        if (res.code == 0) {
-          window.location.href = "/file/upload/suc";
-        }
+
+          var resp = JSON.parse(res);
+          window.location.href = resp.data;
       }
     });
   }
