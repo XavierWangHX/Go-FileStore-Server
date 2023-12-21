@@ -3,6 +3,7 @@ package handler
 import (
 	"FileStore/db"
 	"FileStore/meta"
+	"FileStore/store/oss"
 	"FileStore/util"
 	"encoding/json"
 	"fmt"
@@ -58,6 +59,18 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		newFile.Seek(0, 0)
 		fileMeta.FileSha1 = util.FileSha1(newFile)
+
+		newFile.Seek(0, 0)
+
+		ossPath := "oss/" + fileMeta.FileSha1
+		err = oss.Bucket().PutObject(ossPath, newFile)
+		if err != nil {
+			fmt.Println(err.Error())
+			w.Write([]byte("Upload to Ali OSS Failed"))
+			return
+		}
+		fileMeta.Location = ossPath
+
 		meta.UpdateFileMetaDB(fileMeta)
 
 		r.ParseForm()
@@ -228,5 +241,16 @@ func FileDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	os.Remove(fMeta.Location)
 	meta.RemoveFileMeta(fileSha1)
 	w.WriteHeader(http.StatusOK)
+
+}
+
+func DownloadURLHandler(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseForm()
+	filehash := r.Form.Get("filehash")
+	// 从文件表查找记录
+	row, _ := db.GetFileMeta(filehash)
+	signedURL := oss.DownloadURL(row.FileAddr.String)
+	w.Write([]byte(signedURL))
 
 }
