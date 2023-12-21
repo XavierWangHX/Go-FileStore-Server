@@ -1,8 +1,9 @@
-# distributed-fileserver
+# Golang Based Distributed-FileServer
 
-基于golang实现的一种分布式云存储服务
+基于Golang实现的一种分布式云存储服务
 
-## 关于需要手动安装的库
+## Pre-request packages 
+关于需要手动安装的库
 
 如下：
 ```shell
