@@ -96,7 +96,13 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	enc_pwd := util.Sha1([]byte(passwd + pwd_salt))
 	suc := db.UserSignUp(username, enc_pwd)
 	if suc {
-		w.Write([]byte("Success"))
+		resp := util.RespMsg{
+			Code: 0,
+			Msg:  "OK",
+			Data: "http://" + r.Host + "/user/signin",
+		}
+
+		w.Write(resp.JSONBytes())
 	} else {
 		w.Write([]byte("Failed"))
 	}

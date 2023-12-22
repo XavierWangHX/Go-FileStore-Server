@@ -1,20 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Registration</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        .container {
+            height: 100%;
+            background-image: linear-gradient(to right, #fbc2e1, #a6c1e1);
+        }
+        .login-wrapper{
+            background-color: #fff;
+            width:358px;
+            height:588px;
+            border-radius: 15px;
+            padding:0 50px;
+            position:relative;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+        }
+        .header{
+            font-size:38px;
+            font-weight:bold;
+            text-align:center;
+            line-height:200px;
+        }
+        .input-item{
+            display:block;
+            width:100%;
+            margin-bottom:20px;
+            border:0;
+            padding:10px;
+            border-bottom:1px solid rgb(128,125,125);
+            font-size:15px;
+            outline:none;
+        }
+
+        .btn{
+            padding:10px;
+            text-align:center;
+            margin-top:40px;
+            background-image:linear-gradient(to right, #fbc2e1, #a6c1e1);
+            color:#fff;
+        }
+        .msg{
+            text-align:center;
+            line-align:88px;
+        }
+        a{
+            text-decoration-line:none;
+            color:#abc1ee;
+        }
+    </style>
 </head>
 <body>
-<h1>User Registration</h1>
-<form action="/user/signup" method="post">
-  <label for="username">Username:</label>
-  <input type="text" id="username" name="username" required>
-  <br>
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required>
-  <br>
-  <input type="submit" value="Sign Up">
-</form>
+
+<div class="container">
+    <div class="login-wrapper">
+        <div class="header">注册</div>
+
+            <input type="text" id="username" placeholder="用户名" class="input-item">
+            <input type="text" id="password" placeholder="密码" class="input-item">
+            <input class="btn" type="button" style="margin:0 auto;width:100%;" value="注册" onclick='onSignup()' />
+        <div class="msg">
+            已有账号？
+            <a href="http://47.109.24.184:8080/user/signin">去登录</a>
+        </div>
+    </div>
+</div>
 </body>
+<script lang="javascript">
+
+    function onSignup() {
+
+        var username = document.getElementById('username');
+        var password = document.getElementById('password');
+        $.ajax({
+            url: "/user/signup",
+            type: "POST",
+            data: {
+                "username": username.value,
+                "password": password.value
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (textStatus == "error") {
+                    alert(textStatus + " : " + errorThrown);
+                } else {
+                    alert(textStatus);
+                }
+            },
+            success: function (body, textStatus, jqXHR) {
+                var resp = JSON.parse(body);
+                window.location.href = resp.data;
+            }
+        });
+    }
+</script>
 </html>

@@ -20,15 +20,16 @@
 <body style="width:100%;height:100%">
   <div style="width:100%;height:100%;margin:0 0 10px 0;text-align: center;">
     <div style="font-size:20px;font-weight:bold;
-                margin:0;background: rgb(195, 228, 250);height:32px;">
-      文件云盘首页
+                margin:0;background-image: linear-gradient(to right, #fbc2e1, #a6c1e1);height:32px;">
+      Go云盘首页
     </div>
     <table style="height:100%;width:100%;text-align: left;border-width: 2px; border-color: lightslategrey;">
       <tbody>
         <tr style="margin-bottom: 20px;">
-          <td style="width:20%;height: 100%;background: lightsteelblue;">
-            <div style="text-align: top;height:20%;margin: 10px 0 0 10px;">
-              <img style="width:80px;height:80px;" src="/static/img/avatar.jpeg"></img><br>
+          <td style="width:20%;height: 100%;background-image: linear-gradient(to right, #fbc2e1, #fbc2e1);">
+            <div style="text-align: start;height:20%;margin: 50px 0 0 50px;">
+                欢迎来到Go云盘！ <p style="color: #c82333"></p>
+              <img style="width:200px;height:200px;" src="/static/img/avatar.jpg"></img><br>
               用户名: <p id="username" style="color: seagreen"></p>
               注册时间: <p id="regtime" style="color: seagreen"></p>
             </div>
@@ -129,7 +130,7 @@
           cell = x.insertCell();
           cell.innerHTML = '<button class="btn btn-success" ' +
             'style="height:30px;margin:5px 0;"' +
-            'onClick = "downloadFile(\'http://localhost:8080/file/' +
+            'onClick = "downloadFile(\'/file/' +
             'downloadurl?filehash=' + data[i].FileHash + '&' + queryParams() + '\')">下载</button>';
         }
       }

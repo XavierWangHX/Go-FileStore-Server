@@ -1,14 +1,18 @@
 package handler
 
 import (
+	cmn "FileStore/common"
+	cfg "FileStore/config"
 	"FileStore/db"
 	"FileStore/meta"
+	"FileStore/mq"
 	"FileStore/store/oss"
 	"FileStore/util"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -62,14 +66,38 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		newFile.Seek(0, 0)
 
-		ossPath := "oss/" + fileMeta.FileSha1
-		err = oss.Bucket().PutObject(ossPath, newFile)
-		if err != nil {
-			fmt.Println(err.Error())
-			w.Write([]byte("Upload to Ali OSS Failed"))
-			return
+		ossPath := "oss/" + fileMeta.FileSha1 + "/" + fileMeta.FileName
+		if !cfg.AsyncTransferEnable {
+			err = oss.Bucket().PutObject(ossPath, newFile)
+			if err != nil {
+				fmt.Println(err.Error())
+				w.Write([]byte("Upload failed!"))
+				return
+			}
+			fileMeta.Location = ossPath
+		} else {
+			// 写入异步转移任务队列
+			data := mq.TransferData{
+				FileHash:      fileMeta.FileSha1,
+				CurLocation:   fileMeta.Location,
+				DestLocation:  ossPath,
+				DestStoreType: cmn.StoreOSS,
+			}
+			pubData, _ := json.Marshal(data)
+			pubSuc := mq.Publish(
+				cfg.TransExchangeName,
+				cfg.TransOSSRoutingKey,
+				pubData,
+			)
+
+			if !pubSuc {
+				fmt.Println("Publish Failed!")
+				return
+			}
+			fmt.Println("Publish Success")
+			log.Println("Publish Success")
+
 		}
-		fileMeta.Location = ossPath
 
 		meta.UpdateFileMetaDB(fileMeta)
 
@@ -252,5 +280,4 @@ func DownloadURLHandler(w http.ResponseWriter, r *http.Request) {
 	row, _ := db.GetFileMeta(filehash)
 	signedURL := oss.DownloadURL(row.FileAddr.String)
 	w.Write([]byte(signedURL))
-
 }

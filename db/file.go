@@ -54,3 +54,25 @@ func InsertToFileTable(filehash string, filename string, filesize int64, fileadd
 	return false
 
 }
+func UpdateFileLocation(filehash string, fileaddr string) bool {
+	stmt, err := myDB.DBConn().Prepare(
+		"update tbl_file set`file_addr`=? where  `file_sha1`=? limit 1")
+	if err != nil {
+		fmt.Println("预编译sql失败, err:" + err.Error())
+		return false
+	}
+	defer stmt.Close()
+
+	ret, err := stmt.Exec(fileaddr, filehash)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	if rf, err := ret.RowsAffected(); nil == err {
+		if rf <= 0 {
+			fmt.Printf("更新文件location失败, filehash:%s", filehash)
+		}
+		return true
+	}
+	return false
+}
