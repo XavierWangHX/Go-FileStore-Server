@@ -2,7 +2,7 @@
 
 基于Golang实现的一种分布式云存储服务
 
-## 启动主入口/Rabbitmq生产者(将文件异步转移到阿里云OSS)
+## 启动主入口/Rabbitmq生产者
 go run main.go
 
 ## 启动Rabbitmq消费者(将文件异步转移到阿里云OSS)
