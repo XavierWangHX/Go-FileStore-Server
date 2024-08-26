@@ -1,7 +1,7 @@
 # Golang Based Distributed-FileServer
 
 基于Golang实现的一种分布式云存储服务
-
+![Go](https://github.com/XavierWangHX/Go-FileStore-Server/blob/main/structure.png)
 ## 启动主入口/Rabbitmq生产者
 go run main.go
 
@@ -19,5 +19,3 @@ go get github.com/garyburd/redigo/redis
 go get github.com/json-iterator/go
 go get github.com/aliyun/aliyun-oss-go-sdk/oss
 go get github.com/streadway/amqp
-
-![Go](https://github.com/XavierWangHX/Go-FileStore-Server/blob/main/structure.png)
