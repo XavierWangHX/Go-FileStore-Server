@@ -19,3 +19,5 @@ go get github.com/garyburd/redigo/redis
 go get github.com/json-iterator/go
 go get github.com/aliyun/aliyun-oss-go-sdk/oss
 go get github.com/streadway/amqp
+
+[!Go](https://github.com/XavierWangHX/Go-FileStore-Server/blob/main/structure.png)
